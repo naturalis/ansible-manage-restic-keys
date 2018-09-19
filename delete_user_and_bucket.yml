@@ -1,0 +1,53 @@
+---
+- hosts: restic-clients
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Delete Restic Policy
+      iam_policy:
+        iam_type: user
+        iam_name: "restic-client-{{ inventory_hostname }}"
+        policy_name: "restic-client-{{ inventory_hostname }}"
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        state: absent
+      connection: local
+
+    - name: Get keys
+      iam:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        name: "restic-client-{{ inventory_hostname }}"
+        state: present
+        access_key_state: create
+      connection: local
+      register: credentials
+
+    - name: Delete keys
+      iam:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        name: "restic-client-{{ inventory_hostname }}"
+        state: present
+        access_key_ids: "{{ credentials.user_meta.access_keys[0].access_key_id }}"
+        access_key_state: remove
+      connection: local
+
+    - name: Delete Restic user
+      iam_user:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        name: "restic-client-{{ inventory_hostname }}"
+        state: absent
+      connection: local
+
+    - name: Delete a bucket in the eu-central-1 region
+      aws_s3:
+        bucket: restic-{{ inventory_hostname }}
+        mode: delete
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        region: eu-central-1
+      connection: local

@@ -1,0 +1,45 @@
+---
+- hosts: restic-clients
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: Create Restic user
+      iam:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        name: "restic-client-{{ inventory_hostname }}"
+        state: present
+        access_key_state: create
+      connection: local
+      register: credentials
+
+    - name: AWS_ACCESS_KEY
+      debug:
+        var: credentials.user_meta.access_keys[0].access_key_id
+      when: credentials.changed
+
+    - name: AWS_SECRET_KEY
+      debug:
+        var: credentials.user_meta.access_keys[0].secret_access_key
+      when: credentials.changed
+
+    - name: Create Policy for Restic user
+      iam_policy:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        iam_name: "restic-client-{{ inventory_hostname }}"
+        policy_name: "restic-client-{{ inventory_hostname }}"
+        state: present
+        policy_json: " {{ lookup( 'template', 'restic-client-policy.json.j2') |to_json }} "
+      connection: local
+
+    - name: Create a bucket in the eu-central-1 region
+      aws_s3:
+        bucket: restic-{{ inventory_hostname }}
+        mode: create
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        region: eu-central-1
+      connection: local

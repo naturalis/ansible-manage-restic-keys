@@ -20,6 +20,13 @@
                 "s3:DeleteObject"
             ],
             "Resource": "arn:aws:s3:::restic-{{inventory_hostname}}/locks/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:DeleteObject"
+            ],
+            "Resource": "arn:aws:s3:::restic-{{inventory_hostname}}/snapshots/*"
         }
     ]
 }

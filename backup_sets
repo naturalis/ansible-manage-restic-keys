@@ -2,4 +2,14 @@
 127.0.0.1   ansible_connection=local
 
 [restic-clients]
-
+foreman
+catalogueoflife
+web-various
+linnaeusng
+drupal
+lims
+iontorrent
+jira
+resourcespace
+nbcdata
+treebase

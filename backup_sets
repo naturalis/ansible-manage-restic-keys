@@ -6,6 +6,11 @@ foreman
 catalogueoflife
 web-various
 linnaeusng
+linnaeusng0-10
+linnaeusng11-20
+linnaeusng21-30
+linnaeusng31-40
+linnaeusng41-50
 drupal
 lims
 iontorrent
@@ -44,6 +49,7 @@ fs-smb-022
 fs-smb-023
 fs-smb-024
 fs-smb-025
+medialib-data
 geneious-db
 maas-lab
 maas

@@ -1,0 +1,12 @@
+{
+    "Rules": [
+        {
+            "ID": "Delete nonconcurrent items after 90 days",
+            "Status": "Enabled",
+	    "Prefix": "",
+            "NoncurrentVersionExpiration": {
+                "NoncurrentDays": 90
+            }
+        }
+    ]
+}

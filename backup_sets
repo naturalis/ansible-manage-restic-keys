@@ -72,3 +72,7 @@ drupal2
 monophylizer
 ipt
 netbox
+
+[s3sync-clients]
+fs-smb-sp-001
+fs-smb-023

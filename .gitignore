@@ -1,2 +1,2 @@
 *.retry
-groupvars
+group_vars

@@ -3,7 +3,7 @@
 ### Requirements
 ```
 * ansible (pip3 install ansible)
-* boto (pip3 install boto)
+* boto3 (pip3 install boto)
 ```
 
 ### Prepare

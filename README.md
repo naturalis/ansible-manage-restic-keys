@@ -48,13 +48,15 @@ ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret
 You can add `--limit set-one` to the command to just rotate keys for *set-one*
 
 
-### Delete user and bucket
+### Delete user and bucket (restic only)
+
+Add single client into delete_sets, enter client name again during prompt.
 
 Run
 ```
-ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret key> delete_user_and_bucket.yml
+ansible-playbook -i delete_sets -e access=<aws access key> -e secret=<aws secret key> delete_user_and_bucket.yml
 ```
-You can add `--limit set-one` to the command to just delete  *set-one*
+
 
 
 

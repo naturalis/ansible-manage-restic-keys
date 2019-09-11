@@ -76,6 +76,7 @@ netbox
 
 [s3sync-clients]
 fs-smb-sp-001
+fs-smb-003
 fs-smb-002
 fs-smb-022
 fs-smb-023

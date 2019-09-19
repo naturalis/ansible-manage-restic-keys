@@ -73,6 +73,8 @@ drupal2
 monophylizer
 ipt
 netbox
+museumapp
+nbadata
 
 [s3sync-clients]
 fs-smb-sp-001

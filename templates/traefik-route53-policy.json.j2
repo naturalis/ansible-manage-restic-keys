@@ -1,0 +1,27 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:ListHostedZones",
+                "route53:GetChange"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "route53:ChangeResourceRecordSets"
+            ],
+            "Resource" : [
+              {% for name, zoneid in hostedzoneids.items() %}
+                "arn:aws:route53:::hostedzone/{{ zoneid }}"
+                {%- if not loop.last -%}
+                  ,
+                {% endif %}
+              {% endfor %}
+            ]
+        }
+    ]
+}

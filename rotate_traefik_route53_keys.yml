@@ -1,0 +1,40 @@
+---
+- hosts: traefik-clients
+  connection: local
+  gather_facts: false
+  vars:
+  tasks:
+    - name: Create new key
+      iam:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        name: "traefik-route53-{{ inventory_hostname }}"
+        state: present
+        key_count: 2
+        access_key_state: create
+      connection: local
+      register: credentials
+
+    - name: AWS_ACCESS_KEY
+      debug:
+        var: credentials.user_meta.access_keys[0].access_key_id
+      when: credentials.changed
+
+    - name: AWS_SECRET_KEY
+      debug:
+        var: credentials.user_meta.access_keys[0].secret_access_key
+      when: credentials.changed
+
+    - name: Delete previous key
+      iam:
+        aws_access_key: "{{access}}"
+        aws_secret_key: "{{secret}}"
+        iam_type: user
+        name: "traefik-route53-{{ inventory_hostname }}"
+        state: present
+        access_key_ids: "{{ credentials.user_meta.access_keys[1].access_key_id }}"
+        access_key_state: remove
+      connection: local
+
+

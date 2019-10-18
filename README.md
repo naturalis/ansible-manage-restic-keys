@@ -1,4 +1,10 @@
-# Manage keys for Restic
+# Manage AWS users, permissions and buckets
+
+## General
+Scripts for management of user, buckets and permissions for:
+* restic backup user + buckets
+* s3sync backup user + buckets
+* traefik route53 user
 
 ### Requirements
 ```
@@ -6,8 +12,10 @@
 * boto3 (pip3 install boto)
 ```
 
+## Backups, restic and s3sync
+
 ### Prepare
-Edit the `backup_sets` file and add the backup clients under `[restic-clients]`. For example
+Edit the `backup_sets` file and add the backup clients under `[restic-clients]` or `[s3sync-clients]`. For example
 ```
 [local]
 127.0.0.1   ansible_connection=local
@@ -15,6 +23,10 @@ Edit the `backup_sets` file and add the backup clients under `[restic-clients]`.
 [restic-clients]
 set-one
 set-two
+
+[s3sync-clients]
+set-three
+
 ```
 Make sure that the name is *dns compatable*
 
@@ -43,7 +55,8 @@ aws s3api put-bucket-lifecycle --bucket s3sync-<bucket name> --lifecycle-configu
 
 Run
 ```
-ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret key> create_user_and_bucket.yml
+ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret key> rotate_restic_keys.yml
+ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret key> rotate_s3sync_keys.yml
 ```
 You can add `--limit set-one` to the command to just rotate keys for *set-one*
 
@@ -56,6 +69,43 @@ Run
 ```
 ansible-playbook -i delete_sets -e access=<aws access key> -e secret=<aws secret key> delete_user_and_bucket.yml
 ```
+
+## traefik route53 
+This creates and user with permissions to create DNS records in specified hosted domains, this can be used in Treafik configuration with route53 cert provider.
+
+### Prepare
+
+Edit file traefik_route53_sets  Example: 
+```
+[local]
+127.0.0.1   ansible_connection=local
+
+[traefik-clients]
+ainature
+analytics
+```
+Create for each traefik client a file in host_vars named <client>.yml , Below ainature.yml as example:
+```
+name: ainature
+hostedzoneids:
+  ainature.nl: Z1ZDXJ9S0ZVP6U
+  ainature.eu: Z1UXY2QNPHVTVZ
+```
+The script only used the value of the hostedzoneids and the backupset name, not the name: in host_vars is uses in naming the created user. keys of hostedzoneids and name: in host_vars file are just for making the file easier to read and understand. 
+
+### Create users: 
+```
+ansible-playbook -i traefik_route53_sets -e access=<aws access key> -e secret=<aws secret key> create_traefik_route53_user.yml 
+```
+
+### Rotate keys
+
+Run
+```
+ansible-playbook -i backup_sets -e access=<aws access key> -e secret=<aws secret key> rotate_traefik_route53_keys.yml
+```
+You can add `--limit set-one` to the command to just rotate keys for *set-one*
+
 
 
 

@@ -12,7 +12,8 @@
         {
             "Effect": "Allow",
             "Action": [
-                "route53:ChangeResourceRecordSets"
+                "route53:ChangeResourceRecordSets",
+                "route53:ListResourceRecordSets"
             ],
             "Resource" : [
               {% for name, zoneid in hostedzoneids.items() %}
